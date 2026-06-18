@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Toggle dictation on/off. Bound to the GNOME keyboard shortcut.
+set -euo pipefail
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+exec "$ROOT/.venv/bin/python" -m wispermo.client "${1:-toggle}"

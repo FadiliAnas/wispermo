@@ -1,0 +1,35 @@
+name: Build macOS app (.dmg)
+
+# Builds WISPERMO.app + WISPERMO.dmg on a real Apple-Silicon Mac in the cloud.
+# Run it from the repo's Actions tab (Run workflow), or it runs on a tag push.
+# The finished .dmg is uploaded as a downloadable artifact.
+
+on:
+  workflow_dispatch:        # manual "Run workflow" button
+  push:
+    tags: ["v*"]            # or push a tag like v0.1.0
+
+jobs:
+  build:
+    runs-on: macos-14       # Apple Silicon (arm64) runner
+
+    steps:
+      - name: Check out the project
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build the .app and .dmg
+        run: |
+          chmod +x packaging/build-macos.sh
+          ./packaging/build-macos.sh
+
+      - name: Upload the .dmg
+        uses: actions/upload-artifact@v4
+        with:
+          name: WISPERMO-macos-dmg
+          path: WISPERMO.dmg
+          if-no-files-found: error

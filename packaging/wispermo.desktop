@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=WISPERMO
+GenericName=Voice Dictation
+Comment=Local, offline push-to-talk dictation
+Exec=wispermo
+Icon=wispermo
+Terminal=false
+Categories=Utility;
+Keywords=dictation;speech;voice;transcribe;whisper;
+StartupNotify=false

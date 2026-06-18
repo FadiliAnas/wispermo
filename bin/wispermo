@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Launch the WISPERMO app (system tray / control window).
+set -euo pipefail
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+exec "$ROOT/.venv/bin/python" -m wispermo.app "$@"
