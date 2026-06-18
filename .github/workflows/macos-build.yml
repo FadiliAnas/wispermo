@@ -9,6 +9,9 @@ on:
   push:
     tags: ["v*"]            # or push a tag like v0.1.0
 
+permissions:
+  contents: write           # needed to publish a Release with the .dmg
+
 jobs:
   build:
     runs-on: macos-14       # Apple Silicon (arm64) runner
@@ -27,9 +30,18 @@ jobs:
           chmod +x packaging/build-macos.sh
           ./packaging/build-macos.sh
 
-      - name: Upload the .dmg
+      - name: Upload the .dmg as a run artifact
         uses: actions/upload-artifact@v4
         with:
           name: WISPERMO-macos-dmg
           path: WISPERMO.dmg
           if-no-files-found: error
+
+      # On a version tag (e.g. v0.1.0) publish a Release with a direct
+      # download link: .../releases/latest/download/WISPERMO.dmg
+      - name: Publish Release with the .dmg
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: WISPERMO.dmg
+          generate_release_notes: true
