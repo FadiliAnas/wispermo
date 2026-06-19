@@ -9,6 +9,8 @@ We only *monitor* (never grab) the devices, so keystrokes still reach apps.
 """
 from __future__ import annotations
 
+import array
+import fcntl
 import glob
 import os
 import selectors
@@ -16,7 +18,56 @@ import struct
 import threading
 
 EV_KEY = 0x01
+EV_REL = 0x02      # relative axes  -> mice
+EV_ABS = 0x03      # absolute axes  -> touchpads / touchscreens
+KEY_A = 30
+KEY_SPACE = 57
 _EVENT = struct.Struct("llHHi")        # input_event on 64-bit Linux (24 bytes)
+
+
+def _eviocgbit(ev: int, length: int) -> int:
+    # ioctl number: dir(READ=2)<<30 | size<<16 | type('E'=0x45)<<8 | nr(0x20+ev)
+    return (2 << 30) | (length << 16) | (0x45 << 8) | (0x20 + ev)
+
+
+def _evbits(fd: int, ev: int, n: int):
+    buf = array.array("B", [0] * n)
+    try:
+        fcntl.ioctl(fd, _eviocgbit(ev, n), buf, True)
+        return buf
+    except OSError:
+        return None
+
+
+def _devname(fd: int) -> str:
+    buf = array.array("B", [0] * 256)
+    try:
+        fcntl.ioctl(fd, (2 << 30) | (256 << 16) | (0x45 << 8) | 0x06, buf, True)
+        return buf.tobytes().split(b"\x00")[0].decode(errors="replace")
+    except OSError:
+        return ""
+
+
+def is_keyboard(fd: int) -> bool:
+    """True only for real keyboards — never mice/touchpads/tablets. Reading a
+    touchpad's evdev node can disturb its gestures, so we must skip them."""
+    name = _devname(fd).lower()
+    if "ydotool" in name or "virtual" in name:      # our own injector / synthetic
+        return False
+    types = _evbits(fd, 0, 4)                        # supported event-type bitmask
+    if not types:
+        return False
+    tmask = int.from_bytes(types.tobytes(), "little")
+    if not (tmask & (1 << EV_KEY)):
+        return False
+    if tmask & (1 << EV_ABS):                        # touchpad/touchscreen/tablet
+        return False
+    keys = _evbits(fd, EV_KEY, 96)                   # KEY_MAX/8 + 1
+    if not keys:
+        return False
+    # must have real alphabetic keys (mice/touchpads expose only BTN_*, not KEY_A)
+    return bool(keys[KEY_A >> 3] & (1 << (KEY_A & 7))) or \
+        bool(keys[KEY_SPACE >> 3] & (1 << (KEY_SPACE & 7)))
 
 # modifier name -> acceptable keycodes (left/right)
 _MODS = {
@@ -90,13 +141,29 @@ class HotkeyListener(threading.Thread):
     def run(self) -> None:
         sel = selectors.DefaultSelector()
         fds: list[int] = []
+        skipped: list[int] = []
         for path in sorted(glob.glob("/dev/input/event*")):
             try:
                 fd = os.open(path, os.O_RDONLY | os.O_NONBLOCK)
-                sel.register(fd, selectors.EVENT_READ)
-                fds.append(fd)
             except OSError:
                 continue
+            if is_keyboard(fd):
+                sel.register(fd, selectors.EVENT_READ)
+                fds.append(fd)
+            else:
+                # never read mice/touchpads — close immediately
+                os.close(fd)
+                skipped.append(fd)
+        # extremely defensive: if capability detection found no keyboard at all,
+        # don't silently lose the hotkey — fall back to watching all devices.
+        if not fds and skipped:
+            for path in sorted(glob.glob("/dev/input/event*")):
+                try:
+                    fd = os.open(path, os.O_RDONLY | os.O_NONBLOCK)
+                    sel.register(fd, selectors.EVENT_READ)
+                    fds.append(fd)
+                except OSError:
+                    continue
         if not fds:
             return
         try:
