@@ -1,5 +1,0 @@
-# Runtime
-faster-whisper==1.2.1
-PySide6==6.11.1
-
-# Build-only (AppImage packaging): pip install pyinstaller

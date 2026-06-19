@@ -1,167 +1,137 @@
-# WISPERMO
+<div align="center">
 
-**Local, offline push-to-talk dictation for Linux** — a free, private alternative
-to Wispr Flow. Press a hotkey, speak, press again, and your words are typed into
-whatever app you're using. No cloud, no account, no subscription. Your voice
-never leaves your machine.
+<img src="AppIcon.png" width="120" alt="Wispermo" />
 
-![mic](packaging/wispermo.png)
+# Wispermo
 
-- **Engine:** [faster-whisper](https://github.com/SYSTRAN/faster-whisper)
-  (OpenAI Whisper via CTranslate2) — runs fully on CPU.
-- **UI:** PySide6 — system-tray icon (where supported), a floating "listening"
-  overlay, a control window, settings, onboarding and history.
-- **Platform:** Fedora / GNOME on Wayland with PipeWire (adaptable to other
-  distros & X11).
+### Dictation that lives on your Mac. Free & open source.
+
+Press a key, speak, and your words are typed into whatever app you're using —
+instantly, privately, and **100% on-device**. No cloud. No account. No subscription.
+
+[![Platform](https://img.shields.io/badge/platform-macOS%2014%2B-1B1A17)](https://github.com/FadiliAnas/wispermo/releases)
+[![Apple Silicon](https://img.shields.io/badge/Apple%20Silicon-arm64-1B1A17)](https://github.com/FadiliAnas/wispermo/releases)
+[![License: MIT](https://img.shields.io/badge/license-MIT-1B1A17)](LICENSE)
+[![Price](https://img.shields.io/badge/price-free%20forever-4CAF50)](#)
+
+**[⬇️ Download for macOS](https://github.com/FadiliAnas/wispermo/releases/latest)**
+
+<img src="docs/home.png" width="760" alt="Wispermo home screen" />
+
+</div>
+
+---
+
+## What is Wispermo?
+
+Wispermo is a native macOS app that turns your voice into text in **any** application.
+Hold the globe / **Fn** key, talk, release — your speech is transcribed by a Whisper
+model running locally on the Apple Neural Engine, cleaned up, and pasted at your cursor.
+
+It's a free, open-source, privacy-first alternative to cloud dictation tools like Wispr Flow:
+your audio and text **never leave your machine**.
 
 ## Features
 
-- 🎤 **One-key dictation** — global hotkey to start/stop, text typed at your cursor
-- 🟣 **Floating mic button** — always-on-top, draggable, click to dictate
-- 🌊 **Live waveform overlay** — a pill that animates to your real voice level
-- 🔒 **100% offline** — no network, no telemetry
-- ⚡ **Instant** — the model stays warm in RAM; short clips transcribe in <1 s on CPU
-- 🌍 **Multilingual** — 90+ languages, auto-detected or pinned
-- 📖 **Custom dictionary** — auto-replace spoken phrases (names, jargon, emails)
-- ✨ **Smart formatting** — capitalisation/spacing tidy-up + optional trailing space
-- 📋 **Smart output** — types via `ydotool`, or pastes, or copies to clipboard
-- 🧰 **Guided setup** — first-run wizard handles the one-time system permission
-- 🕘 **History & stats** — searchable history, words dictated, time saved
-- 🎛️ **Polished UI** — sidebar app (Home · History · Dictionary · Settings · About)
-  with a dark design system and animated controls
+- 🎤 **On-device transcription** — Whisper runs locally on the Neural Engine. Fast, accurate, and fully offline.
+- 📦 **Plug-and-play** — the speech model ships *inside* the app. Drag to Applications and dictate. No model download, no first-run wait.
+- ⌨️ **Press a key, speak** — a rock-solid global hotkey (globe / Fn). Toggle and push-to-talk modes.
+- ✨ **Smart formatting** — say "point one… point two…" and get a numbered list. Bullets, email greetings & sign-offs, and spoken email addresses are detected automatically.
+- 📋 **Pastes anywhere** — text lands at your cursor in mail, docs, chat, code. Choose instant paste, a typed-out effect, or copy-to-clipboard.
+- 📖 **Custom dictionary** — teach it how you say names, jargon, and emails.
+- 🧭 **Menu-bar native** — a small status item with the Wispermo mark sits up by your clock.
+- 🕘 **History & stats** — searchable history, words dictated, WPM, minutes saved, streak.
+- 🔒 **Private by design** — no account, no telemetry, no network calls. Open source — read every line.
 
-> ### A note on the model
-> This started from a request to use [microsoft/VibeVoice](https://github.com/microsoft/VibeVoice).
-> VibeVoice **does** include a speech-to-text model (VibeVoice-ASR), but it's a
-> 7–9B-parameter, GPU-oriented model built for hour-long recordings — minutes per
-> clip on a CPU laptop. For *instant* dictation, faster-whisper is the right
-> engine. The transcription backend is isolated in
-> [`wispermo/transcriber.py`](wispermo/transcriber.py), so a VibeVoice/GPU backend
-> can be dropped in later by setting `device=cuda` or swapping that one class.
+## Screenshots
 
----
+| Home | History |
+|------|---------|
+| <img src="docs/home.png" alt="Home" /> | <img src="docs/history.png" alt="History" /> |
+| **Dictionary** | **Settings** |
+| <img src="docs/dictionary.png" alt="Dictionary" /> | <img src="docs/settings.png" alt="Settings" /> |
 
-## Install on Linux (one line)
+## Install
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/FadiliAnas/wispermo/main/install.sh | bash
-```
+1. **[Download the latest `Wispermo.dmg`](https://github.com/FadiliAnas/wispermo/releases/latest)** (~132 MB — the speech model is bundled inside).
+2. Open the DMG and **drag Wispermo into Applications**.
+3. Launch it. The first time, macOS may show an "unidentified developer" notice — **right-click the app ▸ Open** to confirm. (The app is self-signed; a notarized build is on the roadmap.)
+4. Grant the three permissions when asked:
+   - **Microphone** — to hear you.
+   - **Accessibility** — to paste/type into other apps.
+   - **Input Monitoring** — to use the global hotkey.
 
-Downloads the latest AppImage, adds **WISPERMO** to your app menu, and works on
-any distro (Arch/Fedora/Ubuntu/…) — even without `libfuse2` (it self-extracts as
-a fallback). Launch it from your apps menu; the first run sets up the dictation
-hotkey + typing permission. To grab the AppImage manually, see the
-[Releases page](https://github.com/FadiliAnas/wispermo/releases/latest).
+That's it — no model to download, nothing else to configure.
 
----
+## How to use
 
-## Run from source (development)
+1. Put your cursor wherever you want text to appear (an email, a doc, a chat box, your editor).
+2. **Hold the globe / Fn key** and speak. A small waveform appears at the bottom of the screen.
+3. **Release** the key — your words are typed in, cleaned up and formatted.
 
-```bash
-cd ~/Work/WISPERMO
-python3 -m venv .venv && . .venv/bin/activate
-pip install -r requirements.txt
-./bin/wispermo            # launches the app; first run opens the setup wizard
-```
+**Modes** (Settings ▸ Input & Output):
+- **Push-to-talk** — hold to record, release to insert.
+- **Toggle** — press once to start, again to stop.
 
-The setup wizard will:
-1. **Grant typing permission** — installs a udev rule (via `pkexec`) so `ydotool`
-   can type into other apps without root, and starts the `ydotoold` service.
-   *(One logout/login is needed the first time for the `input` group to apply.)*
-2. **Register your hotkey** as a GNOME custom shortcut (default **Ctrl+Alt+D**).
+**Smart formatting examples** — Wispermo shapes what you dictate, on-device:
 
-Then press the hotkey, speak, press again — done.
-
-## Build a shippable AppImage
-
-```bash
-./packaging/build-appimage.sh
-#   -> wispermo-x86_64.AppImage   (single file you can distribute/sell)
-```
-
-This bundles Python, PySide6 and faster-whisper with PyInstaller, then packs an
-AppImage. The speech model is downloaded on first use (so the file stays smaller
-and users can choose model size). To distribute:
-
-```bash
-chmod +x wispermo-x86_64.AppImage
-./wispermo-x86_64.AppImage          # runs anywhere; first launch runs onboarding
-```
-
-The AppImage is a single executable; the GNOME hotkey is registered to call it as
-`/path/to/wispermo-x86_64.AppImage toggle`.
-
-### Make it appear in the app grid (recommended)
-
-GNOME does **not** launch an AppImage from a Files double-click (a GNOME security
-default). Register a desktop entry so WISPERMO shows up in Activities / your app
-grid and launches on click — no sudo:
-
-```bash
-./packaging/install-desktop.sh            # uses ./wispermo-x86_64.AppImage
-#   ./packaging/install-desktop.sh /path/to/wispermo-x86_64.AppImage
-```
-
-For end users you'd ship the AppImage plus this one command (or bundle it into
-your installer). Then "WISPERMO" is searchable and clickable like any app.
-
----
-
-## Architecture
-
-```
-  GNOME hotkey ─► `wispermo toggle` ─(unix socket)─► running app
-                                                         │
-  app (GUI thread)                                       │
-   ├─ system tray (if available) / control window        │
-   ├─ floating overlay (listening / transcribing)        │
-   └─ engine worker (own thread):                         ▼
-        record mic (ffmpeg+PipeWire) → faster-whisper → type into focused window
-```
-
-| Module | Role |
+| You say | Wispermo types |
 |---|---|
-| [`app.py`](wispermo/app.py) | controller: tray, overlay, worker thread, socket, single-instance |
-| [`transcriber.py`](wispermo/transcriber.py) | faster-whisper wrapper (swap here for GPU/VibeVoice) |
-| [`recorder.py`](wispermo/recorder.py) | ffmpeg/PipeWire mic capture |
-| [`typist.py`](wispermo/typist.py) | deliver text (ydotool type / paste / clipboard) |
-| [`overlay.py`](wispermo/overlay.py) | floating state pill |
-| [`main_window.py`](wispermo/main_window.py) | control panel + history |
-| [`settings_window.py`](wispermo/settings_window.py) | settings dialog |
-| [`onboarding.py`](wispermo/onboarding.py) | first-run wizard |
-| [`sysintegration.py`](wispermo/sysintegration.py) | GNOME hotkey, uinput setup, autostart |
-| [`history.py`](wispermo/history.py) | transcription history & stats |
-| [`config.py`](wispermo/config.py) | JSON settings at `~/.config/wispermo/` |
+| "point one buy milk point two call sara point three send the report" | 1. Buy milk<br>2. Call Sara<br>3. Send the report |
+| "bullet point review the PR bullet point deploy" | • Review the PR<br>• Deploy |
+| "hi sara … thanks so much ahmed" | Hi Sara,<br><br>…<br><br>Thanks so much,<br>Ahmed |
+| "email me at john at example dot com" | email me at john@example.com |
 
-## Settings
+**Output options** — instant paste (default), a typed-out "writing" effect, or copy-to-clipboard only.
 
-Edit in the app (Settings window) or directly in `~/.config/wispermo/config.json`.
-Any value can also be overridden with an env var, e.g. `WISPERMO_MODEL=small`.
+## Settings at a glance
 
-| Setting | Default | Notes |
-|---|---|---|
-| Model | `base` | `tiny`/`base`/`small`/`medium`/`large-v3` |
-| Language | auto | pin to a language for speed/reliability |
-| Output | `paste` | `paste` (Ctrl+V) · `type` · `clipboard` |
-| Microphone | default | pick a PipeWire/Pulse source |
-| Hotkey | `Ctrl+Alt+D` | GNOME custom shortcut |
-| Autostart | on | launch on login |
+- **Model** — tiny / base (bundled) / small / large-v3. (Non-bundled models download on demand.)
+- **Language** — auto-detect or pin one of 14 languages.
+- **Hotkey** — globe / Fn by default; toggle vs. push-to-talk.
+- **Smart formatting · Remove fillers · Trailing space · Floating button** — toggles.
+- **Dictionary** — spoken → written replacements.
 
-## Troubleshooting
+## Privacy
 
-- **No tray icon on GNOME** — expected. GNOME hides legacy tray icons; WISPERMO
-  runs in the background and shows the overlay while you speak. Re-launch it any
-  time to open the control window. For a real tray icon, install the GNOME
-  extension *AppIndicator and KStatusNotifierItem Support* and log out/in.
-- **Text isn't typed** (but a notification shows the transcription) — `ydotool`
-  can't reach `/dev/uinput`. Re-run the setup wizard, then log out/in once and
-  `systemctl --user restart ydotoold`. Or set Output → *Clipboard* and paste.
-- **Wrong language detected** on short clips — pin the language in Settings.
-- **Wrong mic** — choose the right source in Settings (or `pactl list short sources`).
+Everything runs locally. There are **no servers, no accounts, and no telemetry** — Wispermo makes
+no network calls during normal use. Your audio is transcribed on the Neural Engine and discarded;
+your text only goes where you paste it. Don't take our word for it — the source is right here.
 
-## License & selling
+## Build from source
 
-The app code is yours to license as you wish. Dependencies: PySide6 is **LGPL**
-(fine for commercial/closed-source distribution as long as the Qt libraries
-remain replaceable, which the AppImage layout preserves); faster-whisper is MIT,
-CTranslate2 is MIT, Whisper models are MIT. Keep the third-party license notices.
+**Requirements:** macOS 14+, Apple Silicon, and the **Xcode Command Line Tools** (`xcode-select --install`) — full Xcode is **not** required.
+
+```bash
+# compile
+swift build -c release
+
+# build the signed .app + drag-to-install .dmg (bundles the Whisper model)
+./build-app.sh release
+```
+
+`build-app.sh` compiles the app, fetches & **bundles the Whisper model** for plug-and-play use,
+signs it with a stable local identity (so macOS permissions persist across rebuilds), and
+produces `Wispermo.app` and `Wispermo.dmg`. Build a smaller bundle with `WISPERMO_MODEL=tiny ./build-app.sh`.
+
+## How it works
+
+- **Native Swift** — SwiftUI + AppKit (`NSStatusItem`, `NSPanel`, `NSEvent` hotkey monitors).
+- **[WhisperKit](https://github.com/argmaxinc/WhisperKit)** — on-device Whisper via CoreML / the Apple Neural Engine. The model + tokenizer are bundled in the app for offline, no-download use.
+- **AVAudioEngine** captures the mic → 16 kHz mono; **CGEvent** delivers the keystrokes (paste / type).
+- The text formatter (numbered lists, bullets, email shaping, de-stutter) is pure, deterministic, on-device logic — no LLM, zero latency.
+
+## Roadmap
+
+- [ ] Apple **Developer ID notarization** (warning-free download).
+- [ ] Custom-hotkey recorder + microphone picker.
+- [ ] **Linux** version (whisper.cpp + GTK/Qt).
+
+## Contributing
+
+Issues and PRs welcome — this is built in the open so anyone can help make it better.
+Clone, `swift build`, and hack away.
+
+## License
+
+[MIT](LICENSE) © Anas Fadili. Free forever.

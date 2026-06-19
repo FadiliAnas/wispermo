@@ -1,3 +1,0 @@
-# Allow the `input` group to use /dev/uinput so ydotoold can synthesize
-# keystrokes without root. Installed to /etc/udev/rules.d/ by install.sh.
-KERNEL=="uinput", GROUP="input", MODE="0660", OPTIONS+="static_node=uinput"

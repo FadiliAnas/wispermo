@@ -1,18 +1,15 @@
-.venv/
-__pycache__/
-*.pyc
+# Swift / SwiftPM
+.build/
+.swiftpm/
+Package.pins
 
-# packaging artifacts
-packaging/build/
-packaging/dist/
-packaging/WISPERMO.AppDir/
-packaging/appimagetool-*.AppImage
-packaging/ffmpeg-static/
-packaging/ffmpeg-static.tar.xz
-*.AppImage
-packaging/macos-model/
-packaging/wispermo.iconset/
-packaging/wispermo.icns
-packaging/dmg/
-.venv-macos/
-WISPERMO.dmg
+# Bundled model cache (downloaded at build time, not committed)
+.model-cache/
+
+# Build outputs
+*.app/
+*.dmg
+
+# macOS
+.DS_Store
+xcuserdata/
