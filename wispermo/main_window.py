@@ -332,7 +332,8 @@ class SettingsPage(QWidget):
                              config["hotkey_mode"])
         root.addWidget(self._section("General", [
             ("Appearance", "Light paper or dark ink", self.appearance),
-            ("Dictation hotkey", "The key that triggers dictation", self.hotkey),
+            ("Dictation hotkey", "Any key or combo — e.g. F9 or Ctrl+Alt+Space. "
+             "(The Fn key can't be captured by any app.)", self.hotkey),
             ("Hotkey mode", "Hold to talk, or press to toggle", self.hkmode),
             ("Floating mic button", "Always-on-top quick button", self.mini),
             ("Start on login", "Launch automatically", self.autostart),

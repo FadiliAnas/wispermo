@@ -22,8 +22,23 @@ ARCH="${ARCH:-x86_64}"
 
 say() { printf '\033[1;36m==>\033[0m %s\n' "$*"; }
 
+# Bootstrap a virtualenv with deps if one isn't present (CI / fresh machine).
+if [ ! -x "$PY" ]; then
+  say "Creating virtualenv + installing dependencies"
+  python3 -m venv "$ROOT/.venv"
+  "$PY" -m pip install -q --upgrade pip
+  "$PY" -m pip install -q -r "$ROOT/requirements.txt"
+fi
 say "Ensuring PyInstaller is installed"
 "$PY" -m pip install -q --upgrade pyinstaller
+
+if [ "${BUNDLE_MODEL:-1}" = "1" ]; then
+  say "Pre-downloading the speech model (so it can be bundled)"
+  "$PY" - <<'PY' || true
+from faster_whisper import WhisperModel
+WhisperModel("base")
+PY
+fi
 
 say "Running PyInstaller (this takes a few minutes)…"
 rm -rf "$DIST" "$BUILD"
