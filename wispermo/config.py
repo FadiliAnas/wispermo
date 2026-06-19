@@ -68,8 +68,8 @@ DEFAULTS: dict[str, object] = {
     "trailing_space": True,     # add a space after inserted text
     "remove_fillers": False,    # drop um/uh/er…
     "dictionary": {},           # {spoken phrase: written form}
-    # floating mic button
-    "show_mini_button": True,
+    # floating mic button (opt-in feature, off by default)
+    "show_mini_button": False,
     "mini_button_pos": [],      # [x, y] best-effort remembered position
     # appearance
     "appearance": "light",      # light / dark

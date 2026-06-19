@@ -10,7 +10,7 @@ import math
 
 from PySide6.QtCore import QPoint, QRectF, Qt, QTimer, Signal
 from PySide6.QtGui import QColor, QPainter, QPen
-from PySide6.QtWidgets import QGraphicsDropShadowEffect, QWidget
+from PySide6.QtWidgets import QWidget
 
 SIZE = 56
 
@@ -29,12 +29,6 @@ class MiniButton(QWidget):
         self.setFixedSize(SIZE, SIZE)
         self.setCursor(Qt.PointingHandCursor)
         self.setToolTip("Click to dictate · drag to move")
-
-        shadow = QGraphicsDropShadowEffect(self)
-        shadow.setBlurRadius(26)
-        shadow.setColor(QColor(0, 0, 0, 150))
-        shadow.setOffset(0, 5)
-        self.setGraphicsEffect(shadow)
 
         self._state = "idle"
         self._phase = 0.0
