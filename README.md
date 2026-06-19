@@ -50,7 +50,7 @@ curl -fsSL https://raw.githubusercontent.com/FadiliAnas/wispermo/main/install.sh
 Downloads the latest AppImage, adds **WISPERMO** to your app menu, and works on
 any distro (Arch/Fedora/Ubuntu/…) — even without `libfuse2` (it self-extracts as
 a fallback). Launch it from your apps menu; the first run sets up the dictation
-hotkey + typing permission. To get the `.dmg`/AppImage manually, see the
+hotkey + typing permission. To grab the AppImage manually, see the
 [Releases page](https://github.com/FadiliAnas/wispermo/releases/latest).
 
 ---

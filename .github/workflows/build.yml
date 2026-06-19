@@ -1,0 +1,36 @@
+name: Build Linux AppImage
+
+# Builds the Linux AppImage. Run from the Actions tab (Run workflow) or push a
+# version tag (v*). On a tag it's published to a GitHub Release with a direct
+# download link used by the one-line installer.
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  linux:
+    runs-on: ubuntu-22.04        # older glibc -> runs on Arch/Fedora/Ubuntu/…
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Build AppImage
+        run: |
+          chmod +x packaging/build-appimage.sh
+          ./packaging/build-appimage.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: WISPERMO-linux-AppImage
+          path: wispermo-x86_64.AppImage
+          if-no-files-found: error
+      - name: Publish to Release (on tag)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: wispermo-x86_64.AppImage
+          generate_release_notes: true
