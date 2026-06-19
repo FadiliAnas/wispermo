@@ -39,10 +39,11 @@ class Transcriber:
         threads = max(1, (os.cpu_count() or 4) // 2)
         # prefer a model bundled in the AppImage (offline, no download)
         model = bundled.model_path(self.model_name)
+        offline = os.path.isdir(model)        # bundled dir -> never hit the network
         t0 = time.monotonic()
         self._model = WhisperModel(
             model, device=self.device, compute_type=self.compute_type,
-            cpu_threads=threads,
+            cpu_threads=threads, local_files_only=offline,
         )
         return time.monotonic() - t0
 

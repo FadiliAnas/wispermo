@@ -11,20 +11,23 @@ from PySide6.QtGui import QColor
 from .config import config
 
 # warm-neutral ramp (the token sheet)
-PAPER   = "#FAFAF8"
+PAPER   = "#F3F1EC"
 WHITE   = "#FFFFFF"
-MIST    = "#F2F2EF"
-CLOUD   = "#E6E6E2"
+MIST    = "#EFEDE7"
+CLOUD   = "#E7E4DD"
 SILVER  = "#CDCDC8"
-STEEL   = "#9C9C97"
-GRAPHITE = "#5E5E5A"
-SLATE   = "#2E2E2C"
-INK     = "#121211"
+STEEL   = "#9A968C"
+GRAPHITE = "#6B6760"
+SLATE   = "#33312D"
+INK     = "#1B1A17"
 OFFBLACK = "#0C0C0B"
+DANGER  = "#C0473C"
+IDLE    = "#4CAF50"      # green "ready" indicator
 
-# fonts — named faces first, clean system fallbacks (never Inter)
-SANS = '"SF Pro Text", "Söhne", "Neue Montréal", "Cantarell", "Helvetica Neue", sans-serif'
-MONO = '"Berkeley Mono", "JetBrains Mono", "Commit Mono", "SF Mono", "DejaVu Sans Mono", monospace'
+# fonts — serif headings, clean sans UI, mono for stats/timers
+SERIF = '"Source Serif 4", "Noto Serif", "Georgia", serif'
+SANS = '"Inter", "Cantarell", "Helvetica Neue", "SF Pro Text", sans-serif'
+MONO = '"JetBrains Mono", "Berkeley Mono", "Commit Mono", "SF Mono", "DejaVu Sans Mono", monospace'
 
 PALETTES = {
     "light": dict(
@@ -88,8 +91,8 @@ QToolTip {{
 QFrame#card {{ background: {SURFACE}; border: 1px solid {BORDER}; border-radius: 12px; }}
 QFrame#sidebar {{ background: {SURFACE}; border: none; border-right: 1px solid {BORDER}; }}
 
-QLabel#h1 {{ font-size: 23px; font-weight: 700; letter-spacing: -0.3px; }}
-QLabel#h2 {{ font-size: 15px; font-weight: 600; }}
+QLabel#h1 {{ font-family: {SERIF}; font-size: 25px; font-weight: 700; letter-spacing: -0.3px; }}
+QLabel#h2 {{ font-family: {SERIF}; font-size: 16px; font-weight: 600; }}
 QLabel#muted {{ color: {MUTED}; }}
 QLabel#statValue {{ font-family: {MONO}; font-size: 26px; font-weight: 600; color: {TEXT}; }}
 QLabel#statLabel {{ color: {MUTED}; font-size: 11px; letter-spacing: 0.4px; text-transform: uppercase; }}

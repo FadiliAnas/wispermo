@@ -40,6 +40,18 @@ def _ydotool(args: list[str]) -> tuple[bool, str]:
         return False, e.stderr.decode(errors="replace").strip() or "ydotool failed"
 
 
+def _xdotool(args: list[str]) -> tuple[bool, str]:
+    """X11 keystroke injection fallback (works when ydotool/uinput isn't set up)."""
+    try:
+        subprocess.run(["xdotool", *args], check=True,
+                       stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
+        return True, ""
+    except FileNotFoundError:
+        return False, "xdotool not installed"
+    except subprocess.CalledProcessError as e:
+        return False, e.stderr.decode(errors="replace").strip() or "xdotool failed"
+
+
 def _pbcopy(text: str) -> bool:
     try:
         subprocess.run(["pbcopy"], input=text.encode(), check=True)
@@ -101,11 +113,13 @@ def deliver(text: str, mode: str = "paste", type_delay_ms: int = 6) -> str:
             return "copied to clipboard"
         raise TypistError("could not copy to clipboard")
 
+    delay = str(max(0, int(type_delay_ms)))
     if mode == "type":
-        # types character-by-character — a fast "writing" effect. key-delay is
-        # the per-character delay in ms (smaller = faster).
-        delay = str(max(0, int(type_delay_ms)))
+        # types character-by-character — a fast "writing" effect (delay in ms).
         ok, err = _ydotool(["type", "--key-delay", delay, "--", text])
+        if ok:
+            return "typed"
+        ok, err = _xdotool(["type", "--delay", delay, "--", text])   # X11 fallback
         if ok:
             return "typed"
         if _wl_copy(text):
@@ -117,6 +131,9 @@ def deliver(text: str, mode: str = "paste", type_delay_ms: int = 6) -> str:
         raise TypistError("could not copy to clipboard")
     # keycodes: 29=LEFTCTRL, 47=V  (down then up)
     ok, err = _ydotool(["key", "29:1", "47:1", "47:0", "29:0"])
+    if ok:
+        return "pasted"
+    ok, err = _xdotool(["key", "ctrl+v"])                            # X11 fallback
     if ok:
         return "pasted"
     return f"auto-paste failed ({err}); text is on the clipboard"

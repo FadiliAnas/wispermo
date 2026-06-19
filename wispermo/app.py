@@ -120,7 +120,10 @@ class EngineWorker(QObject):
             res.text, formatting=bool(config["formatting"]),
             mapping=config["dictionary"] or {},
             remove_fillers=bool(config["remove_fillers"]))
-        if text and config["trailing_space"]:
+        if text and config["smart_format"]:
+            text = formatting.smart_format(text)
+        # trailing space only for single-line output (not lists/paragraphs)
+        if text and config["trailing_space"] and "\n" not in text:
             text += " "
         delivery = "empty"
         if text:

@@ -64,6 +64,7 @@ DEFAULTS: dict[str, object] = {
     "reduce_hallucination": True,  # suppress phantom words on silence/noise
     # text post-processing
     "formatting": True,         # tidy capitalisation/spacing
+    "smart_format": True,       # voice commands, lists, bullets, email shaping
     "trailing_space": True,     # add a space after inserted text
     "remove_fillers": False,    # drop um/uh/er…
     "dictionary": {},           # {spoken phrase: written form}

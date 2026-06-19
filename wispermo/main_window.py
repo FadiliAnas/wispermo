@@ -108,7 +108,8 @@ class HomePage(QWidget):
         self.refresh()
 
     def set_state(self, state: str) -> None:
-        labels = {"idle": "Ready", "loading": "Loading model…",
+        labels = {"idle": f'<span style="color:{theme.IDLE}">●</span> Ready',
+                  "loading": "Loading model…",
                   "recording": "● Listening…", "transcribing": "Transcribing…",
                   "error": "Something went wrong"}
         self.state_lbl.setText(labels.get(state, state))
@@ -306,6 +307,7 @@ class SettingsPage(QWidget):
         self.speed = _combo(SPEEDS, config["type_delay_ms"])
         self.trailing = ToggleSwitch(bool(config["trailing_space"]))
         self.formatting = ToggleSwitch(bool(config["formatting"]))
+        self.smart = ToggleSwitch(bool(config["smart_format"]))
         self.fillers = ToggleSwitch(bool(config["remove_fillers"]))
         self.vad = ToggleSwitch(bool(config["vad"]))
         root.addWidget(self._section("Output", [
@@ -314,6 +316,7 @@ class SettingsPage(QWidget):
             ("Writing speed", "Speed of the typing effect", self.speed),
             ("Add trailing space", "Handy for continuous dictation", self.trailing),
             ("Tidy formatting", "Fix capitalisation & spacing", self.formatting),
+            ("Smart formatting", "Voice commands, lists, bullets, email", self.smart),
             ("Remove filler words", "Drop “um”, “uh”, “erm”…", self.fillers),
             ("Trim silence", "Whisper voice-activity filter", self.vad),
         ]))
@@ -375,8 +378,9 @@ class SettingsPage(QWidget):
             combo.currentIndexChanged.connect(self._apply)
         self.hotkey.editingFinished.connect(self._apply)
         self.hotkey.keySequenceChanged.connect(self._apply)
-        for sw in (self.trailing, self.formatting, self.fillers, self.vad,
-                   self.reduce_hall, self.autostart, self.mini, self.notify, self.beep):
+        for sw in (self.trailing, self.formatting, self.smart, self.fillers,
+                   self.vad, self.reduce_hall, self.autostart, self.mini,
+                   self.notify, self.beep):
             sw.toggled.connect(self._apply)
         # vocabulary saves on its own (per-keystroke) without a full re-apply
         self.vocab.textChanged.connect(self._save_vocab)
@@ -402,6 +406,7 @@ class SettingsPage(QWidget):
         config.set("reduce_hallucination", self.reduce_hall.isChecked())
         config.set("trailing_space", self.trailing.isChecked())
         config.set("formatting", self.formatting.isChecked())
+        config.set("smart_format", self.smart.isChecked())
         config.set("remove_fillers", self.fillers.isChecked())
         config.set("vad", self.vad.isChecked())
         config.set("autostart", self.autostart.isChecked())
